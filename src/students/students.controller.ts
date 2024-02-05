@@ -36,8 +36,20 @@ export class StudentsController {
     return this.studentsService.getImStudentName(id);
   }
   @Get('getStudentList')
-  getImStudentList() {
-    return this.studentsService.getImStudentList();
+  getImStudentList(
+    @Query('current', ParseIntPipe) current: number,
+    @Query('size', ParseIntPipe) size: number,
+    @Query('name') name: string,
+    @Query('user') user: string,
+    @Query('pageType', ParseIntPipe) pageType: number,
+  ) {
+    return this.studentsService.getImStudentList(
+      current,
+      size,
+      name,
+      user,
+      pageType,
+    );
   }
   @SensitiveOperation(SensitiveType.Set)
   @Post('set-student')

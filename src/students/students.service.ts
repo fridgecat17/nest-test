@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, Brackets } from 'typeorm';
 import { StudentDto } from './dtos/students.dto';
 import { Student } from './entities/students.entity';
 import { Classes } from './entities/classes.entity';
@@ -16,10 +16,7 @@ export class StudentsService {
   private readonly logger = new Logger(StudentsService.name);
   ImStudent(user: string, name?: string) {
     this.logger.log(`student name is ${name}`);
-    return {
-      code: 0,
-      data: 'Im student, ' + name + '! from request => ' + user,
-    };
+    return 'Im student, ' + name + '! from request => ' + user;
   }
   async getImStudentName(id: number) {
     this.logger.log(`get student id is ${id}`);
@@ -32,11 +29,48 @@ export class StudentsService {
     const results = await this.studentRepository.find({ where: { id } });
     return results ?? 'not found';
   }
-  async getImStudentList() {
-    const results = await this.studentRepository.find();
+  async getImStudentList(
+    current: number,
+    size: number,
+    name: string,
+    user: string,
+    pageType: number,
+  ) {
+    // 查询表列表
+    // 分页查询
+    const results = await this.studentRepository
+      .createQueryBuilder('student')
+      .andWhere(
+        new Brackets((qb) => {
+          if (name) {
+            return qb.where('student.name LIKE :name', {
+              name: `%${name}%`,
+            });
+          } else {
+            return qb;
+          }
+        }),
+      )
+      .andWhere(
+        new Brackets((qb) => {
+          if (user) {
+            return qb.andWhere('student.user LIKE :user', {
+              user: `%${user}%`,
+            });
+          } else {
+            return qb;
+          }
+        }),
+      )
+      .skip(pageType ? (current - 1) * size : 1)
+      .take(pageType ? size : 999)
+      .getManyAndCount();
     return {
-      code: 0,
-      data: results,
+      list: results[0],
+      total: results[1],
+      size,
+      current,
+      pages: Math.ceil(results[1] / size),
     };
   }
   async setStudent(@Body() userInfo: StudentDto) {
