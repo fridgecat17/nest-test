@@ -3,6 +3,9 @@ export class StudentDto {
   @IsNotEmpty()
   @IsString()
   name: string;
+  @IsNotEmpty()
+  @IsString()
+  user: string;
   @IsOptional()
   @IsString()
   desc: string;

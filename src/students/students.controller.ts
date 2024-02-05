@@ -19,8 +19,11 @@ import { TransformNamePipe } from '../common/pipes/name.pipes';
 export class StudentsController {
   constructor(private readonly studentsService: StudentsService) {}
   @Get('who-are-you')
-  whoAreYou(@Query('name', TransformNamePipe) name: string) {
-    return this.studentsService.ImStudent(name);
+  whoAreYou(
+    @Query('name', TransformNamePipe) name: string,
+    @Query('user') user: string,
+  ) {
+    return this.studentsService.ImStudent(user, name);
   }
   // @UseGuards(UserGuard) // 单个接口使用守卫
   @NoUser() // 自定义装饰器过滤守卫
@@ -32,10 +35,14 @@ export class StudentsController {
   getNameById(@Query('id', ParseIntPipe) id: number) {
     return this.studentsService.getImStudentName(id);
   }
+  @Get('getStudentList')
+  getImStudentList() {
+    return this.studentsService.getImStudentList();
+  }
   @SensitiveOperation(SensitiveType.Set)
-  @Post('set-student-name')
-  setStudentName(@User() user: string, @Body() student: StudentDto) {
-    return this.studentsService.setStudent(user, student);
+  @Post('set-student')
+  setStudentName(@Body() student: StudentDto) {
+    return this.studentsService.setStudent(student);
   }
   @Post('who-is-request')
   whoIsReq(@User() user: string) {

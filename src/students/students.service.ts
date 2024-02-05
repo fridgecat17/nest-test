@@ -16,7 +16,10 @@ export class StudentsService {
   private readonly logger = new Logger(StudentsService.name);
   ImStudent(user: string, name?: string) {
     this.logger.log(`student name is ${name}`);
-    return 'Im student, ' + name + '! from request => ' + user;
+    return {
+      code: 0,
+      data: 'Im student, ' + name + '! from request => ' + user,
+    };
   }
   async getImStudentName(id: number) {
     this.logger.log(`get student id is ${id}`);
@@ -29,13 +32,25 @@ export class StudentsService {
     const results = await this.studentRepository.find({ where: { id } });
     return results ?? 'not found';
   }
-  async setStudent(user: string, @Body() userInfo: StudentDto) {
+  async getImStudentList() {
+    const results = await this.studentRepository.find();
+    return {
+      code: 0,
+      data: results,
+    };
+  }
+  async setStudent(@Body() userInfo: StudentDto) {
     const results = this.studentRepository.save({
       name: userInfo.name,
+      user: userInfo.user,
       desc: userInfo.desc,
       sex: userInfo.sex,
     });
-    return results;
+    return {
+      code: 0,
+      data: results,
+      msg: 'success',
+    };
   }
   async setClass(name: string, studentIds: number[]) {
     const students = await this.studentRepository.find({

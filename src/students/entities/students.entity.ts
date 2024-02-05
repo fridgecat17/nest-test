@@ -15,6 +15,9 @@ export class Student {
   @Column({ type: 'varchar' })
   name: string;
 
+  @Column({ type: 'varchar' })
+  user: string;
+
   @Column({ type: 'varchar', nullable: true })
   desc: string;
 
