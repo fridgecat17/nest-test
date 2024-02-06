@@ -62,6 +62,7 @@ export class StudentsService {
           }
         }),
       )
+      .orderBy('createDate', 'DESC')
       .skip(pageType ? (current - 1) * size : 1)
       .take(pageType ? size : 999)
       .getManyAndCount();
