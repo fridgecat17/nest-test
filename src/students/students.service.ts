@@ -14,21 +14,17 @@ export class StudentsService {
     private readonly classRepository: Repository<Classes>,
   ) {}
   private readonly logger = new Logger(StudentsService.name);
+  // 详情
   ImStudent(user: string, name?: string) {
     this.logger.log(`student name is ${name}`);
     return 'Im student, ' + name + '! from request => ' + user;
   }
   async getImStudentName(id: number) {
     this.logger.log(`get student id is ${id}`);
-    // const ID_NAME_MAP = {
-    //   1: 'tom',
-    //   2: 'jerry',
-    //   3: 'candy',
-    //   4: 'valeria',
-    // };
     const results = await this.studentRepository.find({ where: { id } });
     return results ?? 'not found';
   }
+  // 列表
   async getImStudentList(
     current: number,
     size: number,
@@ -74,6 +70,26 @@ export class StudentsService {
       pages: Math.ceil(results[1] / size),
     };
   }
+  // 更新学生信息
+  async updatedStudent(@Body() userInfo: StudentDto, uid: number) {
+    const results = this.studentRepository
+      .createQueryBuilder('student')
+      .update(Student)
+      .set({
+        name: userInfo.name,
+        user: userInfo.user,
+        desc: userInfo.desc,
+        sex: userInfo.sex,
+      })
+      .where('id = :id', { id: uid })
+      .execute();
+    return {
+      code: 0,
+      data: results,
+      msg: 'success',
+    };
+  }
+  // 添加
   async setStudent(@Body() userInfo: StudentDto) {
     const results = this.studentRepository.save({
       name: userInfo.name,

@@ -5,6 +5,7 @@ import {
   Get,
   Post,
   Query,
+  Param,
   ParseIntPipe,
 } from '@nestjs/common';
 // import { UserGuard } from '../common/guards/user.guard'; // 单个接口使用守卫
@@ -50,6 +51,13 @@ export class StudentsController {
       user,
       pageType,
     );
+  }
+  @Post(':id')
+  updateStudent(
+    @Body() student: StudentDto,
+    @Param('id', ParseIntPipe) uid: number,
+  ) {
+    return this.studentsService.updatedStudent(student, uid);
   }
   @SensitiveOperation(SensitiveType.Set)
   @Post('set-student')
