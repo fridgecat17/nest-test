@@ -36,6 +36,7 @@ export class StudentsService {
     // 分页查询
     const results = await this.studentRepository
       .createQueryBuilder('student')
+      .where('student.isDel = :isDel', { isDel: false })
       .andWhere(
         new Brackets((qb) => {
           if (name) {
@@ -70,9 +71,25 @@ export class StudentsService {
       pages: Math.ceil(results[1] / size),
     };
   }
+  // 软删除
+  async removeStudent(uid: number) {
+    const results = await this.studentRepository
+      .createQueryBuilder('student')
+      .update(Student)
+      .set({
+        isDel: true,
+      })
+      .where('id = :id', { id: uid })
+      .execute();
+    return {
+      code: 0,
+      data: results,
+      msg: 'success',
+    };
+  }
   // 更新学生信息
   async updatedStudent(@Body() userInfo: StudentDto, uid: number) {
-    const results = this.studentRepository
+    const results = await this.studentRepository
       .createQueryBuilder('student')
       .update(Student)
       .set({
@@ -91,7 +108,7 @@ export class StudentsService {
   }
   // 添加
   async setStudent(@Body() userInfo: StudentDto) {
-    const results = this.studentRepository.save({
+    const results = await this.studentRepository.save({
       name: userInfo.name,
       user: userInfo.user,
       desc: userInfo.desc,

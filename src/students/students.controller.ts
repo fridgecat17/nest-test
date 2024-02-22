@@ -7,6 +7,7 @@ import {
   Query,
   Param,
   ParseIntPipe,
+  Delete,
 } from '@nestjs/common';
 // import { UserGuard } from '../common/guards/user.guard'; // 单个接口使用守卫
 import { StudentDto } from './dtos/students.dto';
@@ -36,6 +37,7 @@ export class StudentsController {
   getNameById(@Query('id', ParseIntPipe) id: number) {
     return this.studentsService.getImStudentName(id);
   }
+  // 查询列表
   @Get('getStudentList')
   getImStudentList(
     @Query('current', ParseIntPipe) current: number,
@@ -52,6 +54,12 @@ export class StudentsController {
       pageType,
     );
   }
+  // 删除
+  @Delete(':id')
+  removeStudent(@Param('id', ParseIntPipe) uid: number) {
+    return this.studentsService.removeStudent(uid);
+  }
+  // 更新编辑
   @Post(':id')
   updateStudent(
     @Body() student: StudentDto,
@@ -59,6 +67,7 @@ export class StudentsController {
   ) {
     return this.studentsService.updatedStudent(student, uid);
   }
+  // 添加
   @SensitiveOperation(SensitiveType.Set)
   @Post('set-student')
   setStudentName(@Body() student: StudentDto) {

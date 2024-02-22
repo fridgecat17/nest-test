@@ -24,6 +24,9 @@ export class Student {
   @Column({ type: 'int', nullable: true })
   sex: number;
 
+  @Column({ default: false })
+  isDel: boolean;
+
   @UpdateDateColumn()
   updateDate: Date;
 
