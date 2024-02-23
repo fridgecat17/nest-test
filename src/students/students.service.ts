@@ -3,15 +3,12 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Brackets } from 'typeorm';
 import { StudentDto } from './dtos/students.dto';
 import { Student } from './entities/students.entity';
-import { Classes } from './entities/classes.entity';
 import { Body } from '@nestjs/common';
 @Injectable()
 export class StudentsService {
   constructor(
     @InjectRepository(Student)
     private readonly studentRepository: Repository<Student>,
-    @InjectRepository(Classes)
-    private readonly classRepository: Repository<Classes>,
   ) {}
   private readonly logger = new Logger(StudentsService.name);
   // 详情
@@ -59,7 +56,11 @@ export class StudentsService {
           }
         }),
       )
-      .orderBy('createDate', 'DESC')
+      //连表查询
+      .leftJoinAndSelect('student.class', 'class')
+      .select('student')
+      .addSelect('class')
+      .orderBy('student.createDate', 'DESC')
       .skip(pageType ? (current - 1) * size : 1)
       .take(pageType ? size : 999)
       .getManyAndCount();
@@ -119,22 +120,5 @@ export class StudentsService {
       data: results,
       msg: 'success',
     };
-  }
-  async setClass(name: string, studentIds: number[]) {
-    const students = await this.studentRepository.find({
-      where: studentIds.map((id) => ({ id })),
-    });
-    const result = await this.classRepository.save({
-      className: name,
-      students: students,
-    });
-    return result;
-  }
-  async findClass(id: number) {
-    const result = await this.classRepository.find({
-      where: { id },
-      relations: ['students'],
-    });
-    return result;
   }
 }

@@ -5,8 +5,9 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
   CreateDateColumn,
+  JoinColumn,
 } from 'typeorm';
-import { Classes } from './classes.entity';
+import { Classes } from '../../class/entities/classes.entity';
 @Entity()
 export class Student {
   @PrimaryGeneratedColumn()
@@ -34,5 +35,6 @@ export class Student {
   createDate: Date;
 
   @ManyToOne(() => Classes, (classes) => classes.students)
-  class: Classes;
+  @JoinColumn({ name: 'classId' })
+  public class: Classes;
 }

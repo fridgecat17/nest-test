@@ -6,7 +6,7 @@ import {
   CreateDateColumn,
   OneToMany,
 } from 'typeorm';
-import { Student } from './students.entity';
+import { Student } from '../../students/entities/students.entity';
 
 @Entity()
 export class Classes {
@@ -15,6 +15,9 @@ export class Classes {
 
   @Column({ type: 'varchar' })
   className: string;
+
+  @Column({ default: false })
+  isDel: boolean;
 
   @OneToMany(() => Student, (student) => student.class)
   students: Student[];

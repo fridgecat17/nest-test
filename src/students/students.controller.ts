@@ -7,13 +7,13 @@ import {
   Query,
   Param,
   ParseIntPipe,
+  DefaultValuePipe,
   Delete,
 } from '@nestjs/common';
 // import { UserGuard } from '../common/guards/user.guard'; // 单个接口使用守卫
 import { StudentDto } from './dtos/students.dto';
 import { StudentsService } from './students.service';
 import { User, NoUser } from 'src/common/decorators';
-import { ClassesDto } from './dtos/classes.dto';
 import { SensitiveOperation } from '../common/decorators';
 import { SensitiveType } from '../sensitive/constants';
 import { TransformNamePipe } from '../common/pipes/name.pipes';
@@ -40,11 +40,11 @@ export class StudentsController {
   // 查询列表
   @Get('getStudentList')
   getImStudentList(
-    @Query('current', ParseIntPipe) current: number,
-    @Query('size', ParseIntPipe) size: number,
+    @Query('current', new DefaultValuePipe(1), ParseIntPipe) current: number,
+    @Query('size', new DefaultValuePipe(10), ParseIntPipe) size: number,
     @Query('name') name: string,
     @Query('user') user: string,
-    @Query('pageType', ParseIntPipe) pageType: number,
+    @Query('pageType', new DefaultValuePipe(1), ParseIntPipe) pageType: number,
   ) {
     return this.studentsService.getImStudentList(
       current,
@@ -53,19 +53,6 @@ export class StudentsController {
       user,
       pageType,
     );
-  }
-  // 删除
-  @Delete(':id')
-  removeStudent(@Param('id', ParseIntPipe) uid: number) {
-    return this.studentsService.removeStudent(uid);
-  }
-  // 更新编辑
-  @Post(':id')
-  updateStudent(
-    @Body() student: StudentDto,
-    @Param('id', ParseIntPipe) uid: number,
-  ) {
-    return this.studentsService.updatedStudent(student, uid);
   }
   // 添加
   @SensitiveOperation(SensitiveType.Set)
@@ -77,12 +64,17 @@ export class StudentsController {
   whoIsReq(@User() user: string) {
     return user;
   }
-  @Get('get-class')
-  getClass(@Query('id', ParseIntPipe) id: number) {
-    return this.studentsService.findClass(id);
+  // 更新编辑
+  @Post(':id')
+  updateStudent(
+    @Body() student: StudentDto,
+    @Param('id', ParseIntPipe) uid: number,
+  ) {
+    return this.studentsService.updatedStudent(student, uid);
   }
-  @Post('set-class')
-  setClass(@Body() classes: ClassesDto) {
-    return this.studentsService.setClass(classes.className, classes.students);
+  // 删除
+  @Delete(':id')
+  removeStudent(@Param('id', ParseIntPipe) uid: number) {
+    return this.studentsService.removeStudent(uid);
   }
 }

@@ -5,14 +5,19 @@ import { AppService } from './app.service';
 import { StudentsModule } from './students/students.module';
 // import { StudentsService } from './students/students.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserGuard } from './common/guards/user.guard'; // 全局挂载守卫
-import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
+// import { UserGuard } from './common/guards/user.guard'; // 全局挂载守卫
+import {
+  // APP_GUARD,
+  APP_INTERCEPTOR,
+} from '@nestjs/core';
 import { SensitiveController } from './sensitive/sensitive.controller';
 import { SensitiveModule } from './sensitive/sensitive.module';
 import { SensitiveInterceptor } from './common/interceptors/sensitive.interceptor';
+import { ClassModule } from './class/class.module';
 @Module({
   imports: [
     StudentsModule,
+    ClassModule,
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: '127.0.0.1',
@@ -24,6 +29,7 @@ import { SensitiveInterceptor } from './common/interceptors/sensitive.intercepto
       synchronize: true, // 数据库自动同步entity文件修改
     }),
     SensitiveModule,
+    ClassModule,
   ],
   controllers: [AppController, SensitiveController],
   providers: [
