@@ -3,6 +3,8 @@ import { Classes } from './entities/classes.entity';
 import { Student } from '../students/entities/students.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Brackets } from 'typeorm';
+import { Body } from '@nestjs/common';
+import { ClassesDto } from './dtos/classes.dto';
 @Injectable()
 export class ClassService {
   constructor(
@@ -58,6 +60,42 @@ export class ClassService {
       size,
       current,
       pages: Math.ceil(results[1] / size),
+    };
+  }
+  // 软删除
+  async removeClass(uid: number) {
+    const results = await this.classRepository
+      .createQueryBuilder('class')
+      .update(Classes)
+      .set({
+        isDel: true,
+      })
+      .where('id = :id', { id: uid })
+      .execute();
+    return {
+      code: 0,
+      data: results,
+      msg: 'success',
+    };
+  }
+  // 更新信息
+  async updatedClass(@Body() userInfo: ClassesDto, uid: number) {
+    const students = await this.studentRepository.find({
+      where: userInfo.userIds.map((id) => ({ id })),
+    });
+    const results = await this.classRepository
+      .createQueryBuilder('class')
+      .update(Classes)
+      .set({
+        className: userInfo.name,
+        students: students,
+      })
+      .where('id = :id', { id: uid })
+      .execute();
+    return {
+      code: 0,
+      data: results,
+      msg: 'success',
     };
   }
 }

@@ -27,4 +27,17 @@ export class ClassController {
   setClass(@Body() classes: ClassesDto) {
     return this.classService.setClass(classes.name, classes.userIds);
   }
+  // 更新编辑
+  @Post(':id')
+  updatedClass(
+    @Body() classes: ClassesDto,
+    @Param('id', ParseIntPipe) uid: number,
+  ) {
+    return this.classService.updatedClass(classes, uid);
+  }
+  // 删除
+  @Delete(':id')
+  removeClass(@Param('id', ParseIntPipe) uid: number) {
+    return this.classService.removeClass(uid);
+  }
 }
