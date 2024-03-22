@@ -14,6 +14,8 @@ import { SensitiveController } from './sensitive/sensitive.controller';
 import { SensitiveModule } from './sensitive/sensitive.module';
 import { SensitiveInterceptor } from './common/interceptors/sensitive.interceptor';
 import { ClassModule } from './class/class.module';
+import { RedisService } from './redis/redis.service';
+import { RedisModule } from './redis/redis.module';
 @Module({
   imports: [
     StudentsModule,
@@ -30,6 +32,7 @@ import { ClassModule } from './class/class.module';
     }),
     SensitiveModule,
     ClassModule,
+    RedisModule,
   ],
   controllers: [AppController, SensitiveController],
   providers: [
@@ -44,6 +47,7 @@ import { ClassModule } from './class/class.module';
       useClass: SensitiveInterceptor,
     },
     AppService,
+    RedisService,
   ],
 })
 export class AppModule {}

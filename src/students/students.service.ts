@@ -4,11 +4,13 @@ import { Repository, Brackets } from 'typeorm';
 import { StudentDto } from './dtos/students.dto';
 import { Student } from './entities/students.entity';
 import { Body } from '@nestjs/common';
+import { RedisService } from '../redis/redis.service';
 @Injectable()
 export class StudentsService {
   constructor(
     @InjectRepository(Student)
     private readonly studentRepository: Repository<Student>,
+    private readonly redisService: RedisService,
   ) {}
   private readonly logger = new Logger(StudentsService.name);
   // 详情
@@ -64,6 +66,8 @@ export class StudentsService {
       .skip(pageType ? (current - 1) * size : 1)
       .take(pageType ? size : 999)
       .getManyAndCount();
+    // 使用redis
+    await this.redisService.setValue('test', JSON.stringify(results[0]));
     return {
       list: results[0],
       total: results[1],
