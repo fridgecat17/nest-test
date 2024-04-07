@@ -16,6 +16,13 @@ import { SensitiveInterceptor } from './common/interceptors/sensitive.intercepto
 import { ClassModule } from './class/class.module';
 import { RedisService } from './redis/redis.service';
 import { RedisModule } from './redis/redis.module';
+import { AuthService } from './auth/auth.service';
+import { AuthController } from './auth/auth.controller';
+import { AuthModule } from './auth/auth.module';
+import { UserService } from './user/user.service';
+import { UserModule } from './user/user.module';
+import { UserController } from './user/user.controller';
+import { JwtService } from '@nestjs/jwt';
 @Module({
   imports: [
     StudentsModule,
@@ -33,8 +40,15 @@ import { RedisModule } from './redis/redis.module';
     SensitiveModule,
     ClassModule,
     RedisModule,
+    AuthModule,
+    UserModule,
   ],
-  controllers: [AppController, SensitiveController],
+  controllers: [
+    AppController,
+    SensitiveController,
+    AuthController,
+    UserController,
+  ],
   providers: [
     // 全局挂载守卫
     // {
@@ -48,6 +62,9 @@ import { RedisModule } from './redis/redis.module';
     },
     AppService,
     RedisService,
+    AuthService,
+    UserService,
+    JwtService,
   ],
 })
 export class AppModule {}
