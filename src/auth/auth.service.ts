@@ -2,6 +2,7 @@ import { UserStatusDTO } from './../user/dto/user-status.dto';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { LoginUserDto } from '../user/dto/login-user.dto';
+import { jwtConstants } from './constans';
 import { UserService } from '../user/user.service';
 import * as _ from 'lodash';
 import * as bcrypt from 'bcryptjs';
@@ -14,7 +15,7 @@ export class AuthService {
   ) {}
 
   // 验证用户有效性，这个在local策略里用到
-  async validateUser(loginUserDto: LoginUserDto): Promise<UserStatusDTO> {
+  async validateUser(loginUserDto: LoginUserDto): Promise<any> {
     const username = loginUserDto.username;
     const password = loginUserDto.password;
     if (_.isEmpty(username) || _.isEmpty(password)) {
@@ -44,14 +45,16 @@ export class AuthService {
   // 登录接口服务层
   async login(userInfo: UserStatusDTO) {
     const token = this.createToken(userInfo);
-
     return {
       userInfo,
       ...token,
     };
   }
   createToken({ username, id: userId }: UserStatusDTO) {
-    const token = this.jwtService.sign({ username, userId });
+    const payload = { username, userId };
+    const token = this.jwtService.sign(payload, {
+      secret: jwtConstants.secret,
+    });
     const expires = process.env.expiresTime;
 
     return {

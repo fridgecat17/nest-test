@@ -10,7 +10,7 @@ async function bootstrap() {
   });
   app.useGlobalPipes(new ValidationPipe());
   // 全局注册错误的过滤器
-  app.useGlobalFilters(new HttpExceptionFilter());
+  // app.useGlobalFilters(new HttpExceptionFilter());
   // 全局注册拦截器
   app.useGlobalInterceptors(new TransformInterceptor());
   await app.listen(3001);

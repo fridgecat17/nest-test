@@ -22,11 +22,6 @@ export class UserController {
     return await this.userService.register(createUserDto);
   }
 
-  @Get('hello')
-  hello(@Body() createUserDto: CreateUserDto) {
-    return 'hello';
-  }
-
   @UseGuards(JwtAuthGuard)
   @Get('profile')
   async me(@User('id') userId: string) {

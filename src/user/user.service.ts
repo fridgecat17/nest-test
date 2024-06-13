@@ -35,7 +35,6 @@ export class UserService {
       if (_.isEmpty(result)) {
         return user;
       }
-
       return {
         code: 0,
         data: result,

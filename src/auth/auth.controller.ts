@@ -27,7 +27,7 @@ export class AuthController {
   // 登录接口
   @UseGuards(LocalAuthGuard)
   @Post('login')
-  login(@Req() req: Request) {
+  async login(@Req() req: Request) {
     try {
       return this.authService.login(req.user);
     } catch (error) {
