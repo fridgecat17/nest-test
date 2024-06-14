@@ -1,5 +1,5 @@
 import {
-  // UseGuards,
+  UseGuards,
   Body,
   Controller,
   Get,
@@ -17,6 +17,7 @@ import { User, NoUser } from 'src/common/decorators';
 import { SensitiveOperation } from '../common/decorators';
 import { SensitiveType } from '../sensitive/constants';
 import { TransformNamePipe } from '../common/pipes/name.pipes';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 @Controller('students')
 export class StudentsController {
   constructor(private readonly studentsService: StudentsService) {}
@@ -38,6 +39,7 @@ export class StudentsController {
     return this.studentsService.getImStudentName(id);
   }
   // 查询列表
+  @UseGuards(JwtAuthGuard)
   @Get('getStudentList')
   getImStudentList(
     @Query('current', new DefaultValuePipe(1), ParseIntPipe) current: number,

@@ -6,12 +6,13 @@ import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { UserModule } from '../user/user.module';
 import { AuthController } from './auth.controller';
+import { jwtConstants } from '../auth/constans';
 @Module({
   imports: [
     UserModule,
     PassportModule,
     JwtModule.register({
-      secret: '123', // 设置私钥
+      secret: jwtConstants.secret, // 设置私钥
       signOptions: { expiresIn: '24h' }, // 过期时间
     }),
   ],
