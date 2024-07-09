@@ -8,6 +8,7 @@ import {
   ParseIntPipe,
   DefaultValuePipe,
   Delete,
+  Put,
 } from '@nestjs/common';
 import { ClassService } from './class.service';
 import { ClassesDto } from './dtos/classes.dto';
@@ -28,7 +29,7 @@ export class ClassController {
     return this.classService.setClass(classes.name, classes.userIds);
   }
   // 更新编辑
-  @Post(':id')
+  @Put(':id')
   updatedClass(
     @Body() classes: ClassesDto,
     @Param('id', ParseIntPipe) uid: number,

@@ -9,6 +9,7 @@ import {
   ParseIntPipe,
   DefaultValuePipe,
   Delete,
+  Put,
 } from '@nestjs/common';
 // import { UserGuard } from '../common/guards/user.guard'; // 单个接口使用守卫
 import { StudentDto } from './dtos/students.dto';
@@ -39,7 +40,7 @@ export class StudentsController {
     return this.studentsService.getImStudentName(id);
   }
   // 查询列表
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   @Get('getStudentList')
   getImStudentList(
     @Query('current', new DefaultValuePipe(1), ParseIntPipe) current: number,
@@ -67,7 +68,7 @@ export class StudentsController {
     return user;
   }
   // 更新编辑
-  @Post(':id')
+  @Put(':id')
   updateStudent(
     @Body() student: StudentDto,
     @Param('id', ParseIntPipe) uid: number,

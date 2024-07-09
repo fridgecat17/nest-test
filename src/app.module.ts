@@ -23,20 +23,33 @@ import { UserService } from './user/user.service';
 import { UserModule } from './user/user.module';
 import { UserController } from './user/user.controller';
 import { JwtService } from '@nestjs/jwt';
+import App_globalConfig from './config/configuration';
+import DatabaseConfig from './config/database';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      load: [App_globalConfig, DatabaseConfig],
+    }),
+    TypeOrmModule.forRootAsync({
+      imports: [ClassModule],
+      useFactory: async (configService: ConfigService) => {
+        return {
+          type: 'mysql',
+          host: configService.get('database.host'),
+          port: Number(DatabaseConfig().port),
+          username: DatabaseConfig().username,
+          password: DatabaseConfig().password,
+          database: DatabaseConfig().database,
+          autoLoadEntities: true,
+          synchronize: true, // 数据库自动同步entity文件修改
+        };
+      },
+      inject: [ConfigService],
+    }),
     StudentsModule,
     ClassModule,
-    TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: '127.0.0.1',
-      port: 3306,
-      username: 'root',
-      password: 'ADMINroot17+',
-      database: 'school',
-      autoLoadEntities: true,
-      synchronize: true, // 数据库自动同步entity文件修改
-    }),
     SensitiveModule,
     ClassModule,
     RedisModule,

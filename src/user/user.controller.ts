@@ -21,7 +21,7 @@ export class UserController {
   async register(@Body() createUserDto: CreateUserDto) {
     return await this.userService.register(createUserDto);
   }
-
+  //鉴权
   @UseGuards(JwtAuthGuard)
   @Get('profile')
   async me(@User('id') userId: string) {
@@ -30,7 +30,7 @@ export class UserController {
       userInfo,
     };
   }
-
+  //鉴权
   @UseGuards(JwtAuthGuard)
   @Put('profile')
   async updateProfile(@User('id') userId, @Body() userDto: UpdateUserDto) {
