@@ -14,14 +14,21 @@ export class ClassService {
     private readonly studentRepository: Repository<Student>,
   ) {}
   async setClass(name: string, studentIds: number[]) {
-    const students = await this.studentRepository.find({
-      where: studentIds.map((id) => ({ id })),
-    });
-    const result = await this.classRepository.save({
-      className: name,
-      students: students,
-    });
-    return result;
+    if (studentIds.length > 0) {
+      const students = await this.studentRepository.find({
+        where: studentIds.map((id) => ({ id })),
+      });
+      const result = await this.classRepository.save({
+        className: name,
+        students: students,
+      });
+      return result;
+    } else {
+      const result = await this.classRepository.save({
+        className: name,
+      });
+      return result;
+    }
   }
   // class查询
   async getClassList(
@@ -69,6 +76,7 @@ export class ClassService {
       .update(Classes)
       .set({
         isDel: true,
+        students: [],
       })
       .where('id = :id', { id: uid })
       .execute();
@@ -80,21 +88,22 @@ export class ClassService {
   }
   // 更新信息
   async updatedClass(@Body() userInfo: ClassesDto, uid: number) {
-    const students = await this.studentRepository.find({
-      where: userInfo.userIds.map((id) => ({ id })),
-    });
-    const results = await this.classRepository
+    let students = [];
+    if (userInfo.userIds.length !== 0) {
+      students = await this.studentRepository
+        .createQueryBuilder('student')
+        .where('student.id IN (:...ids)', { ids: userInfo.userIds })
+        .getMany();
+    }
+    const classes = await this.classRepository
       .createQueryBuilder('class')
-      .update(Classes)
-      .set({
-        className: userInfo.name,
-        students: students,
-      })
       .where('id = :id', { id: uid })
-      .execute();
+      .getOne();
+    classes.className = userInfo.name;
+    classes.students = students;
+    await this.classRepository.save(classes);
     return {
       code: 0,
-      data: results,
       msg: 'success',
     };
   }

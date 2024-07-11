@@ -32,6 +32,7 @@ export class UserEntity {
 
   @BeforeInsert()
   async hashPassword() {
+    // 使用哈希加密
     this.password = await bcrypt.hash(this.password, 10);
   }
 

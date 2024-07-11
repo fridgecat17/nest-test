@@ -12,6 +12,7 @@ export default class CustomUsername implements ValidatorConstraintInterface {
     return isEmail(text) || isValidName(text);
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   defaultMessage(arguments_: ValidationArguments) {
     // here you can provide default error message if validation failed
     return '用户名不符合规范';

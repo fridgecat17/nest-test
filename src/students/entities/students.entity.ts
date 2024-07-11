@@ -34,6 +34,9 @@ export class Student {
   @CreateDateColumn()
   createDate: Date;
 
+  @Column({ nullable: true })
+  classId: number;
+
   @ManyToOne(() => Classes, (classes) => classes.students)
   @JoinColumn({ name: 'classId' })
   public class: Classes;
