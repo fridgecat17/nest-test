@@ -13,6 +13,7 @@ import {
   Req,
 } from '@nestjs/common';
 import { Request } from 'express';
+import { Public } from 'src/common/decorators/public.decorators';
 
 declare module 'express' {
   interface Request {
@@ -27,6 +28,7 @@ export class AuthController {
   // 登录接口
   @UseGuards(LocalAuthGuard)
   @Post('login')
+  @Public()
   async login(@Req() req: Request) {
     try {
       return this.authService.login(req.user);

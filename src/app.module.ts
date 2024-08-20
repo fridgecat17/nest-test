@@ -6,10 +6,8 @@ import { StudentsModule } from './students/students.module';
 // import { StudentsService } from './students/students.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 // import { UserGuard } from './common/guards/user.guard'; // 全局挂载守卫
-import {
-  // APP_GUARD,
-  APP_INTERCEPTOR,
-} from '@nestjs/core';
+import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
+import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { SensitiveController } from './sensitive/sensitive.controller';
 import { SensitiveModule } from './sensitive/sensitive.module';
 import { SensitiveInterceptor } from './common/interceptors/sensitive.interceptor';
@@ -64,10 +62,10 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
   ],
   providers: [
     // 全局挂载守卫
-    // {
-    //   provide: APP_GUARD,
-    //   useClass: UserGuard,
-    // },
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
     // 全局挂载拦截器
     {
       provide: APP_INTERCEPTOR,
