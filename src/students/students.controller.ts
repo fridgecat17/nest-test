@@ -40,7 +40,7 @@ export class StudentsController {
     return this.studentsService.getImStudentName(id);
   }
   // 查询列表
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Get('getStudentList')
   getImStudentList(
     @Query('current', new DefaultValuePipe(1), ParseIntPipe) current: number,

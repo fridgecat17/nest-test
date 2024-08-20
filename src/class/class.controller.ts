@@ -3,26 +3,39 @@ import {
   Controller,
   Get,
   Post,
-  Query,
+  // Query,
   Param,
   ParseIntPipe,
-  DefaultValuePipe,
+  // DefaultValuePipe,
   Delete,
   Put,
 } from '@nestjs/common';
 import { ClassService } from './class.service';
 import { ClassesDto } from './dtos/classes.dto';
+import { paging } from 'src/common/decorators/paging.decorators';
 @Controller('class')
 export class ClassController {
   constructor(private readonly classService: ClassService) {}
   @Get('getClassList')
   getClass(
-    @Query('current', new DefaultValuePipe(1), ParseIntPipe) current: number,
-    @Query('size', new DefaultValuePipe(10), ParseIntPipe) size: number,
-    @Query('name') name: string,
-    @Query('pageType', new DefaultValuePipe(1), ParseIntPipe) pageType: number,
+    // @Query('current', new DefaultValuePipe(1), ParseIntPipe) current: number,
+    // @Query('size', new DefaultValuePipe(10), ParseIntPipe) size: number,
+    // @Query('name') name: string,
+    // @Query('pageType', new DefaultValuePipe(1), ParseIntPipe) pageType: number,
+    @paging()
+    query: {
+      name: string;
+      current?: number;
+      size?: number;
+      pageType?: number;
+    },
   ) {
-    return this.classService.getClassList(current, size, pageType, name);
+    return this.classService.getClassList(
+      query.current,
+      query.size,
+      query.pageType,
+      query.name,
+    );
   }
   @Post('set-class')
   setClass(@Body() classes: ClassesDto) {
