@@ -6,6 +6,6 @@ COPY . /home/www/express
 RUN npm install -g pnpm --registry=https://registry.npmmirror.com
 RUN pnpm config set registry https://registry.npmmirror.com
 RUN pnpm install --frozen-lockfile
-EXPOSE 3001 3000
+EXPOSE 3001
 ENTRYPOINT ["npm", "run"]
 CMD ["start"]
