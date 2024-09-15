@@ -1,6 +1,7 @@
 FROM node:18
-WORKDIR /home/webserver/static/jenkins/dist/background/blog
-COPY . /home/webserver/static/jenkins/dist/background/blog
+RUN mkdir -p /home/www/express
+WORKDIR /home/www/express
+COPY . /home/www/express
 # 安装依赖
 RUN npm install -g pnpm --registry=https://registry.npmmirror.com
 RUN pnpm config set registry https://registry.npmmirror.com
