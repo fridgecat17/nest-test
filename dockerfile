@@ -8,4 +8,4 @@ RUN pnpm config set registry https://registry.npmmirror.com
 RUN pnpm install --frozen-lockfile
 EXPOSE 3001 3000
 ENTRYPOINT ["npm", "run"]
-CMD ["start:prod"]
+CMD ["start"]
