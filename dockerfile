@@ -1,6 +1,6 @@
 FROM node:18
-WORKDIR /home/www/nest
-COPY . /home/www/nest
+WORKDIR /home/webserver/static/jenkins/dist/background/blog
+COPY . /home/webserver/static/jenkins/dist/background/blog
 # 安装依赖
 RUN npm install -g pnpm --registry=https://registry.npmmirror.com
 RUN pnpm config set registry https://registry.npmmirror.com
