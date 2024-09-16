@@ -7,5 +7,5 @@ RUN npm install -g pnpm --registry=https://registry.npmmirror.com
 RUN pnpm config set registry https://registry.npmmirror.com
 RUN pnpm install --frozen-lockfile
 EXPOSE 3001
-ENTRYPOINT ["npm", "run"]
+ENTRYPOINT ["pnpm", "run"]
 CMD ["start"]
