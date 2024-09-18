@@ -1,7 +1,6 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { HttpException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
-import * as _ from 'lodash';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from './entities/user.entity';
 import { QueryFailedError, Repository } from 'typeorm';
@@ -32,7 +31,7 @@ export class UserService {
     try {
       const user = this.userRepository.create(userDO);
       const result = await this.userRepository.save(user);
-      if (_.isEmpty(result)) {
+      if (!result) {
         return user;
       }
       return {
