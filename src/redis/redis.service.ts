@@ -8,7 +8,7 @@ export class RedisService {
   constructor() {
     // 在构造函数中初始化 Redis 客户端
     this.redisClient = new Redis({
-      host: 'localhost',
+      host: 'http://43.136.93.90',
       port: 6379,
     });
   }
