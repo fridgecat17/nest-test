@@ -10,6 +10,7 @@ export class RedisService {
     this.redisClient = new Redis({
       host: '43.136.93.90',
       port: 6379,
+      password: 'ADMINroot17+',
     });
   }
 
