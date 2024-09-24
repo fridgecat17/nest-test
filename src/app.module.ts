@@ -49,7 +49,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
     StudentsModule,
     ClassModule,
     SensitiveModule,
-    ClassModule,
     RedisModule,
     AuthModule,
     UserModule,
