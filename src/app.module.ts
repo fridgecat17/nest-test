@@ -32,10 +32,10 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
     }),
     TypeOrmModule.forRootAsync({
       imports: [ClassModule],
-      useFactory: async (configService: ConfigService) => {
+      useFactory: async () => {
         return {
           type: 'mysql',
-          host: configService.get('database.host'),
+          host: DatabaseConfig().host,
           port: Number(DatabaseConfig().port),
           username: DatabaseConfig().username,
           password: DatabaseConfig().password,
