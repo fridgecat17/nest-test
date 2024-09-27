@@ -1,8 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Classes } from './entities/classes.entity';
 import { Student } from '../students/entities/students.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Brackets } from 'typeorm';
+import { Repository, Brackets, In } from 'typeorm';
 import { Body } from '@nestjs/common';
 import { ClassesDto } from './dtos/classes.dto';
 @Injectable()
@@ -58,15 +58,16 @@ export class ClassService {
       .select('class')
       .addSelect('student')
       .orderBy('class.createDate', 'DESC')
-      .skip(pageType ? (current - 1) * size : 1)
-      .take(pageType ? size : 999)
+      .skip(pageType === 1 ? (current - 1) * size : 0)
+      .take(pageType === 1 ? size : undefined)
       .getManyAndCount();
     return {
       list: results[0],
       total: results[1],
-      size,
-      current,
-      pages: Math.ceil(results[1] / size),
+      size: pageType === 1 ? size : undefined,
+      current: pageType === 1 ? current : undefined,
+      pageType,
+      pages: pageType === 1 ? Math.ceil(results[1] / size) : undefined,
     };
   }
   // 软删除
@@ -87,24 +88,27 @@ export class ClassService {
     };
   }
   // 更新信息
-  async updatedClass(@Body() userInfo: ClassesDto, uid: number) {
-    let students = [];
-    if (userInfo.userIds.length !== 0) {
-      students = await this.studentRepository
-        .createQueryBuilder('student')
-        .where('student.id IN (:...ids)', { ids: userInfo.userIds })
-        .getMany();
+  async updatedClass(@Body() classInfo: ClassesDto, classId: number) {
+    // 查找班级
+    const classToUpdate = await this.classRepository.findOne({
+      where: { id: classId },
+      relations: ['students'],
+    });
+
+    if (!classToUpdate) {
+      throw new NotFoundException('未找到指定班级');
     }
-    const classes = await this.classRepository
-      .createQueryBuilder('class')
-      .where('id = :id', { id: uid })
-      .getOne();
-    classes.className = userInfo.name;
-    classes.students = students;
-    await this.classRepository.save(classes);
-    return {
-      code: 0,
-      msg: 'success',
-    };
+
+    // 更新班级名称
+    classToUpdate.className = classInfo.name;
+
+    // 如果提供了学生ID,则更新学生列表
+    if (classInfo.userIds.length > 0) {
+      classToUpdate.students = await this.studentRepository.findBy({
+        id: In(classInfo.userIds),
+      });
+    } else {
+      classToUpdate.students = [];
+    }
   }
 }

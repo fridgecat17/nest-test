@@ -63,17 +63,18 @@ export class StudentsService {
       .select('student')
       .addSelect('class')
       .orderBy('student.createDate', 'DESC')
-      .skip(pageType ? (current - 1) * size : 1)
-      .take(pageType ? size : 999)
+      .skip(pageType === 1 ? (current - 1) * size : 0)
+      .take(pageType === 1 ? size : undefined)
       .getManyAndCount();
     // 使用redis
     await this.redisService.setValue('test', JSON.stringify(results[0]));
     return {
       list: results[0],
       total: results[1],
-      size,
-      current,
-      pages: Math.ceil(results[1] / size),
+      size: pageType === 1 ? size : undefined,
+      current: pageType === 1 ? current : undefined,
+      pageType,
+      pages: pageType === 1 ? Math.ceil(results[1] / size) : undefined,
     };
   }
   // 软删除
