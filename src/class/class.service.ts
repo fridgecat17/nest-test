@@ -89,14 +89,14 @@ export class ClassService {
   }
   // 更新信息
   async updatedClass(@Body() classInfo: ClassesDto, classId: number) {
-    // 查找班级
+    // 查找部门
     const classToUpdate = await this.classRepository.findOne({
       where: { id: classId },
       relations: ['students'],
     });
 
     if (!classToUpdate) {
-      throw new NotFoundException('未找到指定班级');
+      throw new NotFoundException('no found class');
     }
 
     // 更新班级名称
@@ -110,5 +110,13 @@ export class ClassService {
     } else {
       classToUpdate.students = [];
     }
+    // 保存更新后的班级信息
+    const updatedClass = await this.classRepository.save(classToUpdate);
+
+    return {
+      code: 0,
+      data: updatedClass,
+      msg: '更新成功',
+    };
   }
 }
