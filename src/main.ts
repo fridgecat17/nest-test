@@ -14,6 +14,6 @@ async function bootstrap() {
   // app.useGlobalFilters(new HttpExceptionFilter());
   // 全局注册拦截器
   app.useGlobalInterceptors(new TransformInterceptor());
-  await app.listen(App_configuration().port);
+  await app.listen(App_configuration().port, '0.0.0.0');
 }
 bootstrap();
