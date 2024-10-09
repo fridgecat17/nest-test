@@ -13,6 +13,8 @@ RUN pnpm run build
 
 # 生产阶段
 FROM node:18-alpine
+# 安装 curl
+RUN apk add --no-cache curl
 
 WORKDIR /app
 
