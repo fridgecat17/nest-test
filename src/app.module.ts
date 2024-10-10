@@ -24,6 +24,9 @@ import { JwtService } from '@nestjs/jwt';
 import App_globalConfig from './config/configuration';
 import DatabaseConfig from './config/database';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { CosService } from './cos/cos.service';
+import { CosController } from './cos/cos.controller';
+import { CosModule } from './cos/cos.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -52,12 +55,14 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
     RedisModule,
     AuthModule,
     UserModule,
+    CosModule,
   ],
   controllers: [
     AppController,
     SensitiveController,
     AuthController,
     UserController,
+    CosController,
   ],
   providers: [
     // 全局挂载守卫
@@ -75,6 +80,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
     AuthService,
     UserService,
     JwtService,
+    CosService,
   ],
 })
 export class AppModule {}
